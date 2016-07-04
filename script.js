@@ -6,23 +6,32 @@ const scriptRules = require('./script.json');
 module.exports = new Script({
     processing: {
         prompt: (bot) => bot.say('Beep boop...'),
-        receive: () => 'processing'
+        receive: () => 'procesando....'
     },
 
     start: {
         receive: (bot) => {
-            return bot.say('Hi! I\'m Smooch Bot!')
+            return bot.say('Hola! mi nombre es Mandubot, estoy aqui para ayudarte ;) ')
                 .then(() => 'askName');
         }
     },
 
     askName: {
-        prompt: (bot) => bot.say('What\'s your name?'),
+        prompt: (bot) => bot.say('Cual es tu nombre?'),
         receive: (bot, message) => {
             const name = message.text;
             return bot.setProp('name', name)
-                .then(() => bot.say(`Great! I'll call you ${name}
-Is that OK? %[Yes](postback:yes) %[No](postback:no)`))
+                .then(() => bot.say(`Super! desde ahora te llamare ${name}
+Esta bien? %[Si](postback:yes) %[No](postback:no)`))
+                .then(() => 'askQuestion');
+        }
+    },
+    askQuestion: {
+        prompt: (bot) => bot.say('Ahora en que te puedo ayudar?'),
+        receive: (bot, message) => {
+			const question = message.text;
+			return bot.setProp('question', question)
+                .then((question) => bot.say(`Acabas de preguntarme que ${question}`))
                 .then(() => 'finish');
         }
     },
@@ -30,8 +39,7 @@ Is that OK? %[Yes](postback:yes) %[No](postback:no)`))
     finish: {
         receive: (bot, message) => {
             return bot.getProp('name')
-                .then((name) => bot.say(`Sorry ${name}, my creator didn't ` +
-                        'teach me how to do anything else!'))
+                .then((name) => bot.say(`Disculpame ${name}, pero no he aprendido a decir nada mas`))
                 .then(() => 'finish');
         }
     }
